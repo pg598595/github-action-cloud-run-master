@@ -26,39 +26,39 @@ env:
     SERVICE_NAME: super-simple-service
 
 jobs:
-    setup-build-deploy:
+    deploy:
         name: Setup, Build, and Deploy
         runs-on: ubuntu-latest
 
         steps:
-        
-          - name: Login
-            uses: google-github-actions/setup-gcloud@v0
-            with:
-              project_id: ${{ secrets.PROJECT_ID }}
-              service_account_email: ${{ secrets.SA_EMAIL }}
-              service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-            - name: Checkout
-              uses: actions/checkout@v2
+        - name: Login
+          uses: google-github-actions/setup-gcloud@v0
+          with:
+            project_id: ${{ secrets.PROJECT_ID }}
+            service_account_email: ${{ secrets.SA_EMAIL }}
+            service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-            # Setup gcloud CLI
-            # - uses: actions/setup-gcloud@v2
-            #   with:
-            #       service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+          - name: Checkout
+            uses: actions/checkout@v2
 
-            # Configure gcloud CLI
-            - name: gcloud Set up
-              run: |
-                  gcloud config set project $PROJECT_ID
-            # Build and push image to Google Container Registry
-            - name: Build
-              run: |
-                  gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
-            # Deploy image to Cloud Run
-            - name: Deploy
-              run: |
-                  gcloud run deploy $SERVICE_NAME \
-                    --region $RUN_REGION \
-                    --image gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
-                    --platform managed
+          # Setup gcloud CLI
+          # - uses: actions/setup-gcloud@v2
+          #   with:
+          #       service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+
+          # Configure gcloud CLI
+          - name: gcloud Set up
+            run: |
+                gcloud config set project $PROJECT_ID
+          # Build and push image to Google Container Registry
+          - name: Build
+            run: |
+                gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
+          # Deploy image to Cloud Run
+          - name: Deploy
+            run: |
+                gcloud run deploy $SERVICE_NAME \
+                  --region $RUN_REGION \
+                  --image gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
+                  --platform managed
