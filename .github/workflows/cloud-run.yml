@@ -31,13 +31,21 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+
+          - name: Login
+            uses: google-github-actions/setup-gcloud@v0
+            with:
+              project_id: ${{ secrets.PROJECT_ID }}
+              service_account_email: ${{ secrets.SA_EMAIL }}
+              service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
             - name: Checkout
               uses: actions/checkout@v2
 
             # Setup gcloud CLI
-            - uses: actions/setup-gcloud@v2
-              with:
-                  service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+            # - uses: actions/setup-gcloud@v2
+            #   with:
+            #       service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
 
             # Configure gcloud CLI
             - name: gcloud Set up
